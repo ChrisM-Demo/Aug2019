@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 
 import logo from './logo.svg';
 import './App.css';
+import { Dialog } from '@material-ui/core';
 
 var allFields;
 
@@ -21,6 +22,7 @@ function FlexInput({initialValue})
   const[selectList,setSelectList] = useState("");
   const [value,setValue]= useState("");
   
+  function getId() { return fieldId;}
   return ( 
     <div>
      {options==null ?
@@ -52,8 +54,10 @@ function FlexTextField(id,label)
   "label": label,
   "dataType": "Text"
   }}
-  return(new FlexInput(iv));
- }
+
+  const Field  = new FlexInput(iv)
+  return Field;
+}
 
 function FlexSelectField(id,label,options)
  {
@@ -87,7 +91,7 @@ function FlexDateField(id,label)
 
 function setupFields()
 {
-  var fields = []; 
+  const fields = []
   fields.push(new FlexTextField("FirstName", "First name"));
   fields.push(new FlexTextField("Surname","Surname"));
   fields.push(new FlexTextField("Tel","Phone number"));
@@ -104,19 +108,61 @@ function setupFields()
   fields.push(new FlexTextField("ParaFirm","Training contract firm"));
   fields.push(new FlexDateField("ParaTrainStart","Training contract start date")); 
   fields.push(new FlexFileField("CV", "Upload your CV (please include grades where relevant)"));
-  allFields = fields;
+ allFields = fields;
 }
 
-function QQ(x,y) {    //QuestionQuestion
+function QQ(x,y) {    //QuestionQuestion like c# ??
   if (x==null) return y;
   return x;
+}
+
+function ValidateData()
+{
+  // todo - validation
+  // return error message if fails 
+       return "";
+}
+
+
+function GetData()  /// not working,   How can I see names/values in allFields?
+{
+//  var ret = {};
+//  return( allFields.map(function(field){ret[field.fieldId]=field.value})     
+return {}
+}
+
+
+async function SaveData(cvRef)
+{
+  var x = GetData();
+  x.CVRef =  cvRef;
+  localStorage.setItem("LastSignup",x)
+  return true;
+}
+
+async function UploadCV()
+{
+// post to service and get reference
+//return reference
+return "XYZ123"
+}
+
+function PostData()
+{
+  if (!ValidateData()!="") 
+  {
+    alert("It went wrong")
+    return;
+  }
+  UploadCV().then(cvRef =>  SaveData(cvRef)).then(ok=> alert("Signup Successful"));  // should be react material Dialog
 }
 
 function App() {
   setupFields();
   return (
     <div >
-      <body>      
+      <body> 
+        <button onClick={PostData}>Post data</button>
         {allFields.map((o, index) => {return (<div>{o}</div>)})}  
       </body>
     </div>
